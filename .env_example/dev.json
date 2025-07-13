@@ -1,0 +1,5 @@
+{
+    "OPENAI_API_KEY": "get from open ai",
+    "OPENAI_API_BASEPATH": "get from open ai",
+    "OPENAI_MODEL": "which model to use"
+}
