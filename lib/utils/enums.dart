@@ -1,0 +1,1 @@
+enum MessageAuthor { me, chatgpt }
