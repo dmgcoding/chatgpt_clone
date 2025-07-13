@@ -16,7 +16,7 @@ class MessageBubble extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Align(
-            alignment: author == MessageAuthor.me
+            alignment: author == MessageAuthor.user
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
             child: Container(
@@ -25,22 +25,21 @@ class MessageBubble extends StatelessWidget {
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(12),
                   topRight: const Radius.circular(12),
-                  bottomLeft: author == MessageAuthor.me
+                  bottomLeft: author == MessageAuthor.user
                       ? const Radius.circular(12)
                       : const Radius.circular(0),
-                  bottomRight: author == MessageAuthor.me
+                  bottomRight: author == MessageAuthor.user
                       ? const Radius.circular(0)
                       : const Radius.circular(12),
                 ),
-                color: author == MessageAuthor.me
+                color: author == MessageAuthor.user
                     ? AppColors.green
                     : AppColors.grey,
               ),
               child: Text(text),
             ),
           ),
-
-          author == MessageAuthor.me
+          author == MessageAuthor.user
               ? Container()
               : Container(
                   margin: const EdgeInsets.only(left: 8, top: 12, right: 8),

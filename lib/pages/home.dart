@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             const MessageBubble(
-              author: MessageAuthor.me,
+              author: MessageAuthor.user,
               text: 'How to configure lints?',
             ),
             const MessageBubble(
@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
                   'To enforce the use of the const keyword in your Flutter app using lints, you can configure your analysis_options.yaml file.',
             ),
             const MessageBubble(
-              author: MessageAuthor.me,
+              author: MessageAuthor.user,
               text: 'How to configure lints?',
             ),
             const MessageBubble(
