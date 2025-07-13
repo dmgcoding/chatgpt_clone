@@ -39,7 +39,6 @@ class MessageBubble extends StatelessWidget {
               child: Text(text),
             ),
           ),
-
           author == MessageAuthor.me
               ? Container()
               : Container(
