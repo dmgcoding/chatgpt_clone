@@ -1,11 +1,54 @@
+import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
+import 'package:gpt_clone1/environment.dart';
+import 'package:gpt_clone1/models/msg.dart';
 import 'package:gpt_clone1/utils/asset_paths.dart';
 import 'package:gpt_clone1/utils/colors.dart';
 import 'package:gpt_clone1/utils/enums.dart';
 import 'package:gpt_clone1/widgets/message_bubble.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final _msgCtrl = TextEditingController();
+
+  final messages = <Message>[];
+
+  void send() async {
+    final request = _msgCtrl.text;
+    if (request.trim().isEmpty) return;
+    messages.add(Message(MessageAuthor.user, request));
+    _msgCtrl.clear();
+    setState(() {});
+
+    try {
+      final messageRequests = [
+        OpenAIChatCompletionChoiceMessageModel(
+          role: OpenAIChatMessageRole.user,
+          content: [
+            OpenAIChatCompletionChoiceMessageContentItemModel.text(request),
+          ],
+        ),
+      ];
+      final msg = await OpenAI.instance.chat.create(
+        model: openaimodel,
+        messages: messageRequests,
+        n: 1,
+      );
+      final contents = msg.choices.first.message.content ?? [];
+      if (contents.isEmpty) return;
+      final response = contents.first.text ?? 'error';
+      messages.add(Message(MessageAuthor.chatgpt, response));
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,23 +59,16 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            const MessageBubble(
-              author: MessageAuthor.user,
-              text: 'How to configure lints?',
-            ),
-            const MessageBubble(
-              author: MessageAuthor.chatgpt,
-              text:
-                  'To enforce the use of the const keyword in your Flutter app using lints, you can configure your analysis_options.yaml file.',
-            ),
-            const MessageBubble(
-              author: MessageAuthor.user,
-              text: 'How to configure lints?',
-            ),
-            const MessageBubble(
-              author: MessageAuthor.chatgpt,
-              text:
-                  'To enforce the use of the const keyword in your Flutter app using lints, you can configure your analysis_options.yaml file.',
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.7,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: messages.length,
+                itemBuilder: (cxt, i) {
+                  final msg = messages[i];
+                  return MessageBubble(author: msg.author, text: msg.message);
+                },
+              ),
             ),
             const Spacer(),
             Center(
@@ -60,6 +96,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             TextField(
+              controller: _msgCtrl,
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -71,6 +108,7 @@ class HomePage extends StatelessWidget {
                   borderSide: const BorderSide(color: AppColors.green),
                 ),
                 suffixIcon: GestureDetector(
+                  onTap: send,
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.only(top: 4, bottom: 4, right: 8),
