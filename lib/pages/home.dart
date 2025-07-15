@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
 
     try {
-      final messageRequests = [
+      final requests = [
         OpenAIChatCompletionChoiceMessageModel(
           role: OpenAIChatMessageRole.user,
           content: [
@@ -36,13 +36,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ];
       final msg = await OpenAI.instance.chat.create(
-        model: openaimodel,
-        messages: messageRequests,
-        n: 1,
+        model: openaiModel,
+        messages: requests,
       );
-      final contents = msg.choices.first.message.content ?? [];
-      if (contents.isEmpty) return;
-      final response = contents.first.text ?? 'error';
+      final content = msg.choices.first.message.content ?? [];
+      if (content.isEmpty) return;
+      final response = content.first.text ?? 'some error';
       messages.add(Message(MessageAuthor.chatgpt, response));
       setState(() {});
     } catch (e) {
